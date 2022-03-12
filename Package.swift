@@ -5,24 +5,27 @@ import PackageDescription
 
 let package = Package(
     name: "FormulaApi",
+    platforms: [.iOS(.v15), .macOS(.v12)],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "FormulaApi",
-            targets: ["FormulaApi"]),
+            targets: ["FormulaApi"]
+        ),
     ],
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(name: "Mocker", url: "https://github.com/WeTransfer/Mocker.git", .upToNextMajor(from: "2.5.5"))
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "FormulaApi",
-            dependencies: []),
+            dependencies: []
+        ),
         .testTarget(
             name: "FormulaApiTests",
-            dependencies: ["FormulaApi"]),
+            dependencies: ["FormulaApi", "Mocker"],
+            resources: [
+                .process("Resources")
+            ]
+        ),
     ]
 )
