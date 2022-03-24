@@ -15,6 +15,11 @@ public struct Race: Decodable {
     public let name: String
     public let circuit: Circuit
     public let date: Date
+    public let firstPractice: Date
+    public let secondPractice: Date
+    public let thirdPractice: Date?
+    public let qualifying: Date
+    public let sprint: Date?
 }
 
 public struct Circuit: Decodable {
@@ -91,6 +96,11 @@ extension Race {
         case circuit = "Circuit"
         case date
         case time
+        case firstPractice = "FirstPractice"
+        case secondPractice = "SecondPractice"
+        case thirdPractice = "ThirdPractice"
+        case qualifying = "Qualifying"
+        case sprint = "Sprint"
     }
 
     public init(from decoder: Decoder) throws {
@@ -109,28 +119,12 @@ extension Race {
         self.url = url
         self.name = try container.decode(String.self, forKey: .name)
         self.circuit = try container.decode(Circuit.self, forKey: .circuit)
-
-        let datePart = try container.decode(String.self, forKey: .date)
-        let timePart = try container.decodeIfPresent(String.self, forKey: .time)
-
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-
-        if let timePart = timePart {
-            formatter.dateFormat = "YYYY-MM-dd HH:mm:ssZ"
-            guard let date = formatter.date(from: "\(datePart) \(timePart)") else {
-                throw DecodingError.dataCorruptedError(forKey: .date, in: container, debugDescription: "Unknown date format")
-            }
-
-            self.date = date
-        } else {
-            formatter.dateFormat = "YYYY-MM-dd"
-            guard let date = formatter.date(from: datePart) else {
-                throw DecodingError.dataCorruptedError(forKey: .date, in: container, debugDescription: "Unknown date format")
-            }
-
-            self.date = date
-        }
+        self.date = try SplitDateDecodable(from: decoder).wrappedValue
+        self.firstPractice = try container.decode(SplitDateDecodable.self, forKey: .firstPractice).wrappedValue
+        self.secondPractice = try container.decode(SplitDateDecodable.self, forKey: .secondPractice).wrappedValue
+        self.thirdPractice = try container.decodeIfPresent(SplitDateDecodable.self, forKey: .thirdPractice)?.wrappedValue
+        self.qualifying = try container.decode(SplitDateDecodable.self, forKey: .qualifying).wrappedValue
+        self.sprint = try container.decodeIfPresent(SplitDateDecodable.self, forKey: .sprint)?.wrappedValue
     }
 }
 
