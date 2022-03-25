@@ -27,28 +27,6 @@ extension F1 {
     }
 }
 
-public struct Criteria {
-    let path: String
-    
-    public static func circuit(_ id: String) -> Criteria { Criteria(path: "/circuits/\(id)") }
-    
-    public static func constructor(_ id: String) -> Criteria { Criteria(path: "/constructors/\(id)") }
-    
-    public static func driver(_ id: String) -> Criteria { Criteria(path: "/drivers/\(id)") }
-    
-    public static func grid(_ position: Int) -> Criteria { Criteria(path: "/grid/\(position)") }
-    
-    public static func result(_ position: Int) -> Criteria { Criteria(path: "/results/\(position)") }
-    
-    public static func fastest(_ rank: Int) -> Criteria { Criteria(path: "/fastest/\(rank)") }
-    
-    public static func status(_ id: String) -> Criteria { Criteria(path: "/status/\(id)") }
-    
-    public static func driverStanding(_ position: Int) -> Criteria { Criteria(path: "/driverStandings/\(position)") }
-    
-    public static func constructorStanding(_ position: Int) -> Criteria { Criteria(path: "/constructorStandings/\(position)") }
-}
-
 public struct Season: Decodable {
     public let season: String
     public let url: URL
