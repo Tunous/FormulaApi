@@ -15,11 +15,19 @@ struct SplitDateDecodable: Decodable {
         let timePart = try container.decodeIfPresent(String.self, forKey: .time)
         
         if let timePart = timePart {
-            let parseStrategy = Date.ParseStrategy(format: "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits)Z", timeZone: .init(secondsFromGMT: 0)!)
-            self.wrappedValue = try Date("\(datePart) \(timePart)", strategy: parseStrategy)
+            self.wrappedValue = try Date("\(datePart) \(timePart)", strategy: .iso8601DateTime)
         } else {
-            let parseStrategy = Date.ParseStrategy(format: "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits)", timeZone: .init(secondsFromGMT: 0)!)
-            self.wrappedValue = try Date(datePart, strategy: parseStrategy)
+            self.wrappedValue = try Date(datePart, strategy: .iso8601DateOnly)
         }
+    }
+}
+
+extension ParseStrategy where Self == Date.ISO8601FormatStyle {
+    static var iso8601DateOnly: Self {
+        Date.ISO8601FormatStyle.iso8601.year().month().day()
+    }
+    
+    static var iso8601DateTime: Self {
+        iso8601DateOnly.time(includingFractionalSeconds: false).dateTimeSeparator(.space)
     }
 }
