@@ -20,10 +20,14 @@ extension F1 {
     /// ```
     /// - Parameter criteria: Criteria used to refine the returned season list.
     /// - Returns: List of seasons matching the given `criteria`.
-    public static func seasons(by criteria: Criteria...) async throws -> [Season] {
-        let url = URL.seasons(by: criteria)
+    public static func seasons(season: RaceSeason = .all, by criteria: [Criteria]) async throws -> [Season] {
+        let url = URL.seasons(season: season, by: criteria)
         let seasonsResponse = try await decodedData(SeasonsResponse.self, from: url)
         return seasonsResponse.seasons
+    }
+    
+    public static func seasons(season: RaceSeason = .all, by criteria: Criteria...) async throws -> [Season] {
+        return try await seasons(by: criteria)
     }
 }
 
@@ -35,8 +39,11 @@ public struct Season: Decodable {
 // MARK: - Private
 
 extension URL {
-    fileprivate static func seasons(by criteria: [Criteria]) -> URL {
+    fileprivate static func seasons(season: RaceSeason, by criteria: [Criteria]) -> URL {
         var url = URL.base
+        if !season.path.isEmpty {
+            url.appendPathComponent(season.path)
+        }
         for criterion in criteria {
             url.appendPathComponent(criterion.path)
         }

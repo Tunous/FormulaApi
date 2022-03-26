@@ -1,10 +1,14 @@
 import Foundation
 
 extension F1 {
-    public static func races(season: RaceSeason? = nil, by criteria: Criteria...) async throws -> [Race] {
+    public static func races(season: RaceSeason = .all, by criteria: [Criteria]) async throws -> [Race] {
         let url = URL.races(season: season, by: criteria)
         let racesResponse = try await decodedData(RacesResponse.self, from: url)
         return racesResponse.races
+    }
+    
+    public static func races(season: RaceSeason = .all, by criteria: Criteria...) async throws -> [Race] {
+        return try await races(season: season, by: criteria)
     }
 }
 
@@ -36,9 +40,10 @@ public struct Location: Decodable {
     public let country: String
 }
 
-public struct RaceSeason {
+public struct RaceSeason: Hashable {
     let path: String
 
+    public static let all = RaceSeason(path: "")
     public static let current = RaceSeason(path: "/current")
     public static func year(_ year: Int) -> RaceSeason { RaceSeason(path: "/\(year)") }
     public static func year(_ year: Int, round: Int) -> RaceSeason { RaceSeason(path: "/\(year)/\(round)") }
@@ -47,9 +52,9 @@ public struct RaceSeason {
 // MARK: - Private
 
 extension URL {
-    fileprivate static func races(season: RaceSeason?, by criteria: [Criteria]) -> URL {
+    fileprivate static func races(season: RaceSeason, by criteria: [Criteria]) -> URL {
         var url = URL.base
-        if let season = season {
+        if !season.path.isEmpty {
             url.appendPathComponent(season.path)
         }
         for criterion in criteria {
