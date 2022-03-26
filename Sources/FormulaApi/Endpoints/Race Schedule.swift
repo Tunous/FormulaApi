@@ -27,7 +27,7 @@ public struct Race: Decodable {
 }
 
 public struct Circuit: Decodable {
-    public let id: String
+    public let id: CircuitID
     public let url: URL
     public let name: String
     public let location: Location
