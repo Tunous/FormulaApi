@@ -19,10 +19,10 @@ public struct Race: Decodable {
     public let name: String
     public let circuit: Circuit
     public let date: Date
-    public let firstPractice: Date
-    public let secondPractice: Date
+    public let firstPractice: Date?
+    public let secondPractice: Date?
     public let thirdPractice: Date?
-    public let qualifying: Date
+    public let qualifying: Date?
     public let sprint: Date?
 }
 
@@ -125,10 +125,10 @@ extension Race {
         self.name = try container.decode(String.self, forKey: .name)
         self.circuit = try container.decode(Circuit.self, forKey: .circuit)
         self.date = try SplitDateDecodable(from: decoder).wrappedValue
-        self.firstPractice = try container.decode(SplitDateDecodable.self, forKey: .firstPractice).wrappedValue
-        self.secondPractice = try container.decode(SplitDateDecodable.self, forKey: .secondPractice).wrappedValue
+        self.firstPractice = try container.decodeIfPresent(SplitDateDecodable.self, forKey: .firstPractice)?.wrappedValue
+        self.secondPractice = try container.decodeIfPresent(SplitDateDecodable.self, forKey: .secondPractice)?.wrappedValue
         self.thirdPractice = try container.decodeIfPresent(SplitDateDecodable.self, forKey: .thirdPractice)?.wrappedValue
-        self.qualifying = try container.decode(SplitDateDecodable.self, forKey: .qualifying).wrappedValue
+        self.qualifying = try container.decodeIfPresent(SplitDateDecodable.self, forKey: .qualifying)?.wrappedValue
         self.sprint = try container.decodeIfPresent(SplitDateDecodable.self, forKey: .sprint)?.wrappedValue
     }
 }
