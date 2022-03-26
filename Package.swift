@@ -13,7 +13,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(name: "Mocker", url: "https://github.com/WeTransfer/Mocker.git", .upToNextMajor(from: "2.5.5"))
+        .package(name: "Mocker", url: "https://github.com/WeTransfer/Mocker.git", .upToNextMajor(from: "2.5.5")),
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
     ],
     targets: [
         .target(
