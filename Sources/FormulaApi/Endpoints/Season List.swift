@@ -4,42 +4,65 @@ extension F1 {
 
     /// List the seasons currently supported by the API.
     ///
-    /// Season lists can be refined by adding one or more of ``Criteria``.
+    /// Season lists can be refined by adding one or more of ``FilterCriteria``. For example, to list all seasons where
+    /// a specific driver has driven for a particular constructor:
     ///
-    /// For example, to list all seasons where a specific driver has driven for a particular constructor:
-    ///
+    /// ```swift
+    /// let seasons = try await F1.seasons(by: [.driver("alonso"), .constructor("renault")])
     /// ```
+    ///
+    /// Alternatively, to list the seasons where a specific driver or constructor has achieved a particular final position in the championship:
+    ///
+    /// ```swift
+    /// let seasons = try await F1.seasons(by: [.driver("alonso"), .driverStanding(1)])
+    /// let seasons = try await F1.seasons(by: [.constructor("renault"), .constructorStanding(1)])
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - season: Limits results to specific season. By default all seasons will be returned.
+    ///   - criteria: Criteria used to refine the returned season list.
+    ///
+    /// - Returns: List of seasons matching the given filter `criteria`.
+    ///
+    /// - Throws: ``F1/Error`` if network request fails.
+    public static func seasons(season: RaceSeason = .all, by criteria: [FilterCriteria]) async throws -> [Season] {
+        let url = URL.seasons(season: season, by: criteria)
+        let seasonsResponse = try await decodedData(SeasonsResponse.self, from: url)
+        return seasonsResponse.seasons
+    }
+
+    /// List the seasons currently supported by the API.
+    ///
+    /// Season lists can be refined by adding one or more of ``FilterCriteria``. For example, to list all seasons where
+    /// a specific driver has driven for a particular constructor:
+    ///
+    /// ```swift
     /// let seasons = try await F1.seasons(by: .driver("alonso"), .constructor("renault"))
     /// ```
     ///
     /// Alternatively, to list the seasons where a specific driver or constructor has achieved a particular final position in the championship:
     ///
-    /// ```
+    /// ```swift
     /// let seasons = try await F1.seasons(by: .driver("alonso"), .driverStanding(1))
     /// let seasons = try await F1.seasons(by: .constructor("renault"), .constructorStanding(1))
     /// ```
-    /// - Parameter criteria: Criteria used to refine the returned season list.
-    /// - Returns: List of seasons matching the given `criteria`.
-    public static func seasons(season: RaceSeason = .all, by criteria: [Criteria]) async throws -> [Season] {
-        let url = URL.seasons(season: season, by: criteria)
-        let seasonsResponse = try await decodedData(SeasonsResponse.self, from: url)
-        return seasonsResponse.seasons
-    }
-    
-    public static func seasons(season: RaceSeason = .all, by criteria: Criteria...) async throws -> [Season] {
+    ///
+    /// - Parameters:
+    ///   - season: Limits results to specific season. By default all seasons will be returned.
+    ///   - criteria: Criteria used to refine the returned season list.
+    ///
+    /// - Returns: List of seasons matching the given filter `criteria`.
+    ///
+    /// - Throws: ``F1/Error`` if network request fails.
+    public static func seasons(season: RaceSeason = .all, by criteria: FilterCriteria...) async throws -> [Season] {
         return try await seasons(by: criteria)
     }
-}
-
-public struct Season: Decodable {
-    public let season: String
-    public let url: URL
 }
 
 // MARK: - Private
 
 extension URL {
-    fileprivate static func seasons(season: RaceSeason, by criteria: [Criteria]) -> URL {
+    fileprivate static func seasons(season: RaceSeason, by criteria: [FilterCriteria]) -> URL {
         var url = URL.base
         if !season.path.isEmpty {
             url.appendPathComponent(season.path)
