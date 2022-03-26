@@ -25,10 +25,21 @@ extension F1 {
     /// - Returns: List of seasons matching the given filter `criteria`.
     ///
     /// - Throws: ``F1/Error`` if network request fails.
-    public static func seasons(season: RaceSeason = .all, by criteria: [FilterCriteria]) async throws -> [Season] {
-        let url = URL.seasons(season: season, by: criteria)
+    public static func seasons(season: RaceSeason = .all, by criteria: [FilterCriteria], page: Page? = nil) async throws -> PaginableSequence<Season> {
+        let url = URL.seasons(season: season, by: criteria, page: page)
         let seasonsResponse = try await decodedData(SeasonsResponse.self, from: url)
-        return seasonsResponse.seasons
+        let page = Page(limit: seasonsResponse.limit, offset: seasonsResponse.offset)
+        let nextPageRequest = {
+            try await F1.seasons(season: season, by: criteria, page: page.next())
+        }
+        //return seasonsResponse.seasons
+        return PaginableSequence(
+            elements: seasonsResponse.seasons,
+            limit: seasonsResponse.limit,
+            offset: seasonsResponse.offset,
+            total: seasonsResponse.total,
+            nextPageRequest: nextPageRequest
+        )
     }
 
     /// List the seasons currently supported by the API.
@@ -54,7 +65,7 @@ extension F1 {
     /// - Returns: List of seasons matching the given filter `criteria`.
     ///
     /// - Throws: ``F1/Error`` if network request fails.
-    public static func seasons(season: RaceSeason = .all, by criteria: FilterCriteria...) async throws -> [Season] {
+    public static func seasons(season: RaceSeason = .all, by criteria: FilterCriteria...) async throws -> PaginableSequence<Season> {
         return try await seasons(by: criteria)
     }
 }
@@ -62,7 +73,7 @@ extension F1 {
 // MARK: - Private
 
 extension URL {
-    fileprivate static func seasons(season: RaceSeason, by criteria: [FilterCriteria]) -> URL {
+    fileprivate static func seasons(season: RaceSeason, by criteria: [FilterCriteria], page: Page?) -> URL {
         var url = URL.base
         if !season.path.isEmpty {
             url.appendPathComponent(season.path)
@@ -72,7 +83,8 @@ extension URL {
         }
         url.appendPathComponent("/seasons")
         url.appendPathExtension("json")
-        return url
+        
+        return url.with(page: page)
     }
 }
 
@@ -83,6 +95,9 @@ fileprivate struct SeasonsResponse: Decodable {
     
     enum DataKeys: String, CodingKey {
         case seasonTable = "SeasonTable"
+        case offset
+        case limit
+        case total
     }
     
     enum SeasonTableKeys: String, CodingKey {
@@ -90,10 +105,28 @@ fileprivate struct SeasonsResponse: Decodable {
     }
     
     let seasons: [Season]
+    let limit: Int
+    let offset: Int
+    let total: Int
     
     init(from decoder: Decoder) throws {
         let rootContainer = try decoder.container(keyedBy: RootKeys.self)
         let dataContainer = try rootContainer.nestedContainer(keyedBy: DataKeys.self, forKey: .data)
+        
+        print("before")
+        guard let limit = Int(try dataContainer.decode(String.self, forKey: .limit)) else {
+            throw DecodingError.dataCorruptedError(forKey: .limit, in: dataContainer, debugDescription: "Type mismatch")
+        }
+        guard let offset = Int(try dataContainer.decode(String.self, forKey: .offset)) else {
+            throw DecodingError.dataCorruptedError(forKey: .offset, in: dataContainer, debugDescription: "Type mismatch")
+        }
+        guard let total = Int(try dataContainer.decode(String.self, forKey: .total)) else {
+            throw DecodingError.dataCorruptedError(forKey: .total, in: dataContainer, debugDescription: "Type mismatch")
+        }
+        self.limit = limit
+        self.offset = offset
+        self.total = total
+        
         let seasonTableContainer = try dataContainer.nestedContainer(keyedBy: SeasonTableKeys.self, forKey: .seasonTable)
         
         self.seasons = try seasonTableContainer.decode([Season].self, forKey: .seasons)

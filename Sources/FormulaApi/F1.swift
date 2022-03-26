@@ -27,4 +27,17 @@ extension F1 {
 
 extension URL {
     static let base: URL = URL(string: "https://ergast.com/api/f1")!
+    
+    func with(page: Page?) -> URL {
+        guard let page = page else {
+            return self
+        }
+        
+        var components = URLComponents(url: self, resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "limit", value: "\(page.limit)"),
+            URLQueryItem(name: "offset", value: "\(page.offset)")
+        ]
+        return components.url!
+    }
 }
