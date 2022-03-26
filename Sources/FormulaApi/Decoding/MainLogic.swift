@@ -1,4 +1,4 @@
-import SwiftUI
+import Foundation
 
 extension F1 {
     static func decodedData<Response: Decodable>(_ type: Response.Type, from url: URL) async throws -> Response {
@@ -13,7 +13,7 @@ extension F1 {
             }
         }
         
-        //print(String(data: data, encoding: .utf8))
+        //print(String(data: data, encoding: .utf8)!)
         
         return try decoder.decode(Response.self, from: data)
     }
