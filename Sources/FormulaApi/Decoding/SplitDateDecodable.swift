@@ -1,4 +1,4 @@
-import SwiftUI
+import Foundation
 
 @propertyWrapper
 struct SplitDateDecodable: Decodable {

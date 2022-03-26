@@ -1,4 +1,4 @@
-import SwiftUI
+import Foundation
 
 /// Criteria that can be used to filter results returned by various API requests.
 public struct FilterCriteria {

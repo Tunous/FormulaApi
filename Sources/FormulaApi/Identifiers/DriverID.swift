@@ -1,4 +1,4 @@
-import SwiftUI
+import Foundation
 
 /// A type which uniquely describes a single driver.
 ///
