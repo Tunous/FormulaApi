@@ -65,9 +65,6 @@ extension URL {
 }
 
 fileprivate struct RacesResponse: Decodable {
-    enum RootKeys: String, CodingKey {
-        case data = "MRData"
-    }
 
     enum DataKeys: String, CodingKey {
         case raceTable = "RaceTable"
@@ -80,10 +77,14 @@ fileprivate struct RacesResponse: Decodable {
     let races: [Race]
 
     init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: RootKeys.self)
+        let container = try decoder.container(keyedBy: MRDataKeys.self)
         let dataContainer = try container.nestedContainer(keyedBy: DataKeys.self, forKey: .data)
         let tableContainer = try dataContainer.nestedContainer(keyedBy: RaceTableKeys.self, forKey: .raceTable)
 
         self.races = try tableContainer.decode([Race].self, forKey: .races)
     }
+}
+
+enum MRDataKeys: String, CodingKey {
+    case data = "MRData"
 }

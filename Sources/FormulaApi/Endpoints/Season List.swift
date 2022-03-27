@@ -28,16 +28,12 @@ extension F1 {
     public static func seasons(season: RaceSeason = .all, by criteria: [FilterCriteria], page: Page? = nil) async throws -> PaginableSequence<Season> {
         let url = URL.seasons(season: season, by: criteria, page: page)
         let seasonsResponse = try await decodedData(SeasonsResponse.self, from: url)
-        let page = Page(limit: seasonsResponse.limit, offset: seasonsResponse.offset)
         let nextPageRequest = {
-            try await F1.seasons(season: season, by: criteria, page: page.next())
+            try await F1.seasons(season: season, by: criteria, page: seasonsResponse.page.next())
         }
-        //return seasonsResponse.seasons
         return PaginableSequence(
             elements: seasonsResponse.seasons,
-            limit: seasonsResponse.limit,
-            offset: seasonsResponse.offset,
-            total: seasonsResponse.total,
+            page: seasonsResponse.page,
             nextPageRequest: nextPageRequest
         )
     }
@@ -89,15 +85,9 @@ extension URL {
 }
 
 fileprivate struct SeasonsResponse: Decodable {
-    enum RootKeys: String, CodingKey {
-        case data = "MRData"
-    }
     
     enum DataKeys: String, CodingKey {
         case seasonTable = "SeasonTable"
-        case offset
-        case limit
-        case total
     }
     
     enum SeasonTableKeys: String, CodingKey {
@@ -105,28 +95,13 @@ fileprivate struct SeasonsResponse: Decodable {
     }
     
     let seasons: [Season]
-    let limit: Int
-    let offset: Int
-    let total: Int
+    let page: Page
     
     init(from decoder: Decoder) throws {
-        let rootContainer = try decoder.container(keyedBy: RootKeys.self)
+        let rootContainer = try decoder.container(keyedBy: MRDataKeys.self)
+        self.page = try rootContainer.decode(Page.self, forKey: .data)
+
         let dataContainer = try rootContainer.nestedContainer(keyedBy: DataKeys.self, forKey: .data)
-        
-        print("before")
-        guard let limit = Int(try dataContainer.decode(String.self, forKey: .limit)) else {
-            throw DecodingError.dataCorruptedError(forKey: .limit, in: dataContainer, debugDescription: "Type mismatch")
-        }
-        guard let offset = Int(try dataContainer.decode(String.self, forKey: .offset)) else {
-            throw DecodingError.dataCorruptedError(forKey: .offset, in: dataContainer, debugDescription: "Type mismatch")
-        }
-        guard let total = Int(try dataContainer.decode(String.self, forKey: .total)) else {
-            throw DecodingError.dataCorruptedError(forKey: .total, in: dataContainer, debugDescription: "Type mismatch")
-        }
-        self.limit = limit
-        self.offset = offset
-        self.total = total
-        
         let seasonTableContainer = try dataContainer.nestedContainer(keyedBy: SeasonTableKeys.self, forKey: .seasonTable)
         
         self.seasons = try seasonTableContainer.decode([Season].self, forKey: .seasons)
