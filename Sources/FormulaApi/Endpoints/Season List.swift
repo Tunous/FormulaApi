@@ -21,6 +21,7 @@ extension F1 {
     /// - Parameters:
     ///   - season: Limits results to specific season. By default all seasons will be returned.
     ///   - criteria: Criteria used to refine the returned season list.
+    ///   - page: Page to fetch. Defaults to fetching first 30 elements.
     ///
     /// - Returns: List of seasons matching the given filter `criteria`.
     ///
@@ -61,6 +62,7 @@ extension F1 {
     /// - Parameters:
     ///   - season: Limits results to specific season. By default all seasons will be returned.
     ///   - criteria: Criteria used to refine the returned season list.
+    ///   - page: Page to fetch. Defaults to fetching first 30 elements.   
     ///
     /// - Returns: List of seasons matching the given filter `criteria`.
     ///

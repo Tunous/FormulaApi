@@ -12,19 +12,27 @@ All of the available API endpoints provided by this library are accessible throu
 ### API
 
 - ``F1``
+
+### Filtering
+
 - ``FilterCriteria``
 - ``RaceSeason``
 
+### Pagination
+
+- ``Page``
+- ``Paginable``
+
 ### Season list
 
-- ``F1/seasons(season:by:)-3iv02``
-- ``F1/seasons(season:by:)-5vqtm``
+- ``F1/seasons(season:by:page:)-8j80j``
+- ``F1/seasons(season:by:page:)-3uyre``
 - ``Season``
 
 ### Race schedule
 
-- ``F1/races(season:by:)-73jja``
-- ``F1/races(season:by:)-28dx3``
+- ``F1/races(season:by:page:)-5sokl``
+- ``F1/races(season:by:page:)-20v6i``
 - ``Race``
 
 ### Identifiers

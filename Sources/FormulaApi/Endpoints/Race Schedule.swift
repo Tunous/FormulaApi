@@ -14,6 +14,7 @@ extension F1 {
     /// - Parameters:
     ///   - season: Limits results to specific season. By default all seasons will be returned.
     ///   - criteria: Filter ciriteria used to refine the returned race schedule.
+    ///   - page: Page to fetch. Defaults to fetching first 30 elements.
     ///
     /// - Returns: List of races matching the given filter `criteria` and `season`.
     ///
@@ -47,6 +48,7 @@ extension F1 {
     /// - Parameters:
     ///   - season: Limits results to specific season. By default all seasons will be returned.
     ///   - criteria: Filter ciriteria used to refine the returned race schedule.
+    ///   - page: Page to fetch. Defaults to fetching first 30 elements.   
     ///
     /// - Returns: List of races matching the given filter `criteria` and `season`.
     ///
