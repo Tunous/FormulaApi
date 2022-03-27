@@ -1,6 +1,6 @@
 import Foundation
 
-/// Filter used to limit response results to a specific race season
+/// Filter used to limit response results to a specific race season.
 ///
 /// ## Topics
 ///
@@ -8,20 +8,30 @@ import Foundation
 ///
 /// - ``all``
 /// - ``current``
-/// - ``year(_:)``
+/// - ``current(round:)``
 /// - ``year(_:round:)``
-public struct RaceSeason: Hashable {
-    let path: String
+public enum RaceSeason: Hashable {
 
     /// Ignores season filter.
-    public static let all = RaceSeason(path: "")
+    case all
+    
+    /// Filters results to the current season and specified `round`.
+    case current(round: RaceRound = .all)
 
+    /// Filters results to a single `year` and optionally to a specific `round`.
+    case year(_ year: Int, round: RaceRound = .all)
+    
     /// Filters results to the current season.
-    public static let current = RaceSeason(path: "/current")
-
-    /// Filters results to a single `year`
-    public static func year(_ year: Int) -> RaceSeason { RaceSeason(path: "/\(year)") }
-
-    /// Filters results to a specific `round` of a single `year`.
-    public static func year(_ year: Int, round: Int) -> RaceSeason { RaceSeason(path: "/\(year)/\(round)") }
+    public static let current = RaceSeason.current(round: .all)
+    
+    var path: String {
+        switch self {
+        case .all:
+            return ""
+        case .current(round: let round):
+            return "/current\(round.path)"
+        case .year(let year, round: let round):
+            return "/\(year)\(round.path)"
+        }
+    }
 }
