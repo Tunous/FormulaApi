@@ -1,27 +1,22 @@
 import SwiftUI
 
-public struct PaginableSequence<Element>: Collection {
+public struct Paginable<Element> {
     public let elements: [Element]
     public let page: Page
-    public let nextPageRequest: () async throws -> PaginableSequence<Element>
+    public let nextPageRequest: () async throws -> Paginable<Element>
     
-    init(elements: [Element], page: Page, nextPageRequest: @escaping () async throws -> PaginableSequence<Element>) {
+    init(elements: [Element], page: Page, nextPageRequest: @escaping () async throws -> Paginable<Element>) {
         self.elements = elements
         self.page = page
         self.nextPageRequest = nextPageRequest
     }
     
-    public func getNextPage() async throws -> PaginableSequence<Element> {
+    public func getNextPage() async throws -> Paginable<Element> {
         return try await nextPageRequest()
     }
-    
-    public var hasPreviousPage: Bool {
-        page.offset > 0
-    }
-    
-    public var hasNextPage: Bool {
-        page.offset + page.limit < page.total
-    }
+}
+
+extension Paginable: Collection {
     
     public var startIndex: Int {
         elements.startIndex

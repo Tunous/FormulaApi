@@ -53,4 +53,22 @@ final class RaceScheduleTests: BaseTestCase {
 
         XCTAssertTrue(!races.isEmpty)
     }
+
+    func testDecodePage() async throws {
+        try mockSuccess(url: "https://ergast.com/api/f1/2012.json", fileName: "races-2012")
+        try mockSuccess(url: "https://ergast.com/api/f1/2012.json?limit=30&offset=30", fileName: "races-2012-page2")
+
+        let races = try await F1.races(season: .year(2012))
+        let races2 = try await races.getNextPage()
+
+        let page = races.page
+        XCTAssertEqual(page.limit, 30)
+        XCTAssertEqual(page.offset, 0)
+        XCTAssertEqual(page.total, 20)
+
+        let page2 = races2.page
+        XCTAssertEqual(page2.limit, 30)
+        XCTAssertEqual(page2.offset, 30)
+        XCTAssertEqual(page2.total, 20)
+    }
 }

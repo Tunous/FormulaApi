@@ -25,13 +25,17 @@ extension F1 {
     /// - Returns: List of seasons matching the given filter `criteria`.
     ///
     /// - Throws: ``F1/Error`` if network request fails.
-    public static func seasons(season: RaceSeason = .all, by criteria: [FilterCriteria], page: Page? = nil) async throws -> PaginableSequence<Season> {
+    public static func seasons(
+        season: RaceSeason = .all,
+        by criteria: [FilterCriteria],
+        page: Page? = nil
+    ) async throws -> Paginable<Season> {
         let url = URL.seasons(season: season, by: criteria, page: page)
         let seasonsResponse = try await decodedData(SeasonsResponse.self, from: url)
         let nextPageRequest = {
             try await F1.seasons(season: season, by: criteria, page: seasonsResponse.page.next())
         }
-        return PaginableSequence(
+        return Paginable(
             elements: seasonsResponse.seasons,
             page: seasonsResponse.page,
             nextPageRequest: nextPageRequest
@@ -61,7 +65,11 @@ extension F1 {
     /// - Returns: List of seasons matching the given filter `criteria`.
     ///
     /// - Throws: ``F1/Error`` if network request fails.
-    public static func seasons(season: RaceSeason = .all, by criteria: FilterCriteria...) async throws -> PaginableSequence<Season> {
+    public static func seasons(
+        season: RaceSeason = .all,
+        by criteria: FilterCriteria...,
+        page: Page? = nil
+    ) async throws -> Paginable<Season> {
         return try await seasons(by: criteria)
     }
 }

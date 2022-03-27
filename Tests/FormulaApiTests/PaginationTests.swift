@@ -1,38 +1,44 @@
 import XCTest
-import FormulaApi
+@testable import FormulaApi
 
 final class PaginationTests: BaseTestCase {
 
-    func testDecodePage() async throws {
-        try mockSuccess(url: "https://ergast.com/api/f1/seasons.json", fileName: "seasons")
+    func testGetNextPageExecutesRequest() async throws {
+        var hasExecuted = false
+        let paginable = Paginable(elements: ["A", "B"], page: Page(limit: 30, offset: 0)) {
+            hasExecuted = true
+            return Paginable(elements: ["C", "D"], page: Page(limit: 30, offset: 30), nextPageRequest: { throw F1.Error.external(statusCode: 500) })
+        }
 
-        let seasons = try await F1.seasons()
+        let nextPage = try await paginable.getNextPage()
 
-        let page = seasons.page
-        XCTAssertEqual(page.limit, 30)
-        XCTAssertEqual(page.offset, 0)
-        XCTAssertEqual(page.total, 73)
-
-        XCTAssertEqual(seasons.first?.season, "1950")
+        XCTAssertTrue(hasExecuted)
+        XCTAssertEqual(nextPage.elements, ["C", "D"])
+        XCTAssertEqual(nextPage.page.limit, 30)
+        XCTAssertEqual(nextPage.page.offset, 30)
     }
 
-    func testDecodeNextPage() async throws {
-        try mockSuccess(url: "https://ergast.com/api/f1/seasons.json", fileName: "seasons")
-
-        let seasons = try await F1.seasons()
-
-        XCTAssertEqual(seasons.first?.season, "1950")
-
-        try mockSuccess(url: "https://ergast.com/api/f1/seasons.json?limit=30&offset=30", fileName: "seasons-page2")
-
-        let seasons2 = try await seasons.getNextPage()
-
-        let page = seasons2.page
-        XCTAssertEqual(page.limit, 30)
-        XCTAssertEqual(page.offset, 30)
-        XCTAssertEqual(page.total, 73)
-
-        XCTAssertEqual(seasons2.first?.season, "1980")
+    func testFirstPageWithMoreAvailable() throws {
+        let page = Page(limit: 30, offset: 0, total: 50)
+        XCTAssertEqual(page.hasPreviousPage, false)
+        XCTAssertEqual(page.hasNextPage, true)
     }
 
+    func testFirstPageWithTotalReached() throws {
+        let page = Page(limit: 30, offset: 0, total: 30)
+        XCTAssertEqual(page.hasPreviousPage, false)
+        XCTAssertEqual(page.hasNextPage, false)
+    }
+
+    func testNextPageWithMoreAvailable() throws {
+        let page = Page(limit: 30, offset: 10, total: 50)
+        XCTAssertEqual(page.hasPreviousPage, true)
+        XCTAssertEqual(page.hasNextPage, true)
+    }
+
+    func testNextPageWithTotalReached() throws {
+        let page = Page(limit: 30, offset: 20, total: 50)
+        XCTAssertEqual(page.hasPreviousPage, true)
+        XCTAssertEqual(page.hasNextPage, false)
+    }
 }

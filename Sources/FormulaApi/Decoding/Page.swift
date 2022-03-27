@@ -18,6 +18,14 @@ public struct Page {
     public func next() -> Page {
         return Page(limit: limit, offset: offset + limit, total: total)
     }
+
+    public var hasPreviousPage: Bool {
+        offset > 0
+    }
+
+    public var hasNextPage: Bool {
+        offset + limit < total
+    }
 }
 
 extension Page: Decodable {
