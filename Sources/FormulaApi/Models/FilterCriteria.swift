@@ -15,6 +15,16 @@ public struct FilterCriteria {
         FilterCriteria(path: "/circuits/\(circuit.id)")
     }
     
+    /// Filters a request to only return entries related to the given `circuit`.
+    ///
+    /// For example when used in ``F1/seasons(season:by:)-5vqtm`` method, the criteria will
+    /// limit the returned seasons to only these, which included the given circuit in their schedule.
+    ///
+    /// - Parameter circuit: The id of a circuit to filter by.
+    public static func circuit(_ circuit: String) -> FilterCriteria {
+        Self.circuit(CircuitID(circuit))
+    }
+    
     /// Filters a request to only return entries related to
     /// the given `constructor`.
     public static func constructor(_ constructor: String) -> FilterCriteria {
@@ -31,6 +41,15 @@ public struct FilterCriteria {
         FilterCriteria(path: "/drivers/\(driver.id)")
     }
     
+    /// Filters a request to only return entries related to the given `driver`.
+    ///
+    /// - Parameter driver: The id of a driver to filter by.
+    ///
+    /// - Returns: Filter criteria based on driver id.
+    public static func driver(_ driver: String) -> FilterCriteria {
+        Self.driver(DriverID(driver))
+    }
+    
     /// Filters a request to only return entries related to
     /// the given starting grid `position`.
     public static func grid(_ position: Int) -> FilterCriteria {
@@ -38,9 +57,15 @@ public struct FilterCriteria {
     }
     
     /// Filters a request to only return entries related to
+    /// the given `result` at the end of the race.
+    public static func finishingResult(_ result: FinishingResult) -> FilterCriteria {
+        FilterCriteria(path: "/results/\(result.rawValue)")
+    }
+    
+    /// Filters a request to only return entries related to
     /// the given `position` at the end of the race.
-    public static func result(_ position: Int) -> FilterCriteria {
-        FilterCriteria(path: "/results/\(position)")
+    public static func finishingPosition(_ position: Int) -> FilterCriteria {
+        finishingResult(.finished(position))
     }
     
     /// Filters a request to only return entries related to
