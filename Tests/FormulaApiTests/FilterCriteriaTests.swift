@@ -18,7 +18,7 @@ final class FilterCriteriaTests: BaseTestCase {
     }
 
     func testGridFilter() throws {
-        XCTAssertEqual(FilterCriteria.grid(4).path, "/grid/4")
+        XCTAssertEqual(FilterCriteria.grid(position: 4).path, "/grid/4")
     }
 
     func testFinishingResultFilter() throws {
@@ -34,7 +34,7 @@ final class FilterCriteriaTests: BaseTestCase {
     }
 
     func testFastestFilter() throws {
-        XCTAssertEqual(FilterCriteria.fastest(1).path, "/fastest/1")
+        XCTAssertEqual(FilterCriteria.fastest(rank: 1).path, "/fastest/1")
     }
 
     func testStatusFilter() throws {
@@ -42,10 +42,10 @@ final class FilterCriteriaTests: BaseTestCase {
     }
 
     func testDriverStandingFilter() throws {
-        XCTAssertEqual(FilterCriteria.driverStanding(3).path, "/driverStandings/3")
+        XCTAssertEqual(FilterCriteria.driverStanding(position: 3).path, "/driverStandings/3")
     }
 
     func testConstructorStandingFilter() throws {
-        XCTAssertEqual(FilterCriteria.constructorStanding(8).path, "/constructorStandings/8")
+        XCTAssertEqual(FilterCriteria.constructorStanding(position: 8).path, "/constructorStandings/8")
     }
 }

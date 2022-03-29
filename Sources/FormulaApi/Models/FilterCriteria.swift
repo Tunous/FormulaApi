@@ -1,8 +1,7 @@
 import Foundation
 
 /// Criteria that can be used to filter results returned by various API requests.
-public struct FilterCriteria {
-    let path: String
+public enum FilterCriteria: Hashable {
     
     /// Filters a request to only return entries related to the given `circuit`.
     ///
@@ -11,10 +10,38 @@ public struct FilterCriteria {
     ///
     /// - Parameter circuit: The circuit to filter by. Can be either a regular string or a know circuit
     /// from the ``CircuitID`` type.
-    public static func circuit(_ circuit: CircuitID) -> FilterCriteria {
-        FilterCriteria(path: "/circuits/\(circuit.id)")
-    }
+    case circuit(_ circuit: CircuitID)
     
+    /// Filters a request to only return entries related to
+    /// the given `constructor`.
+    case constructor(_ constructor: String)
+    
+    /// Filters a request to only return entries related to the given `driver`.
+    ///
+    /// - Parameter driver: The driver to filter by. Can be either a regular string or a known driver
+    /// from the ``DriverID`` type.
+    ///
+    /// - Returns: Filter criteria based on driver id.
+    case driver(_ driver: DriverID)
+    
+    /// Filters a request to only return entries related to the given starting grid `position`.
+    case grid(position: Int)
+    
+    /// Filters a request to only return entries related to the given `result` at the end of the race.
+    case finishingResult(_ result: FinishingResult)
+    
+    /// Filters a request to only return entries related to the time at the given `rank`.
+    case fastest(rank: Int)
+    
+    /// Filters a request to only return entries related to the given finishing `status`.
+    case status(_ status: String)
+    
+    /// Filters a request to only return entries related to the driver at the given standing `position`.
+    case driverStanding(position: Int)
+    
+    /// Filters a request to only return entries related to the constructor at the given standing `position`.
+    case constructorStanding(position: Int)
+
     /// Filters a request to only return entries related to the given `circuit`.
     ///
     /// For example when used in ``F1/seasons(season:by:page:)-o9s8`` method, the criteria will
@@ -24,23 +51,7 @@ public struct FilterCriteria {
     public static func circuit(_ circuit: String) -> FilterCriteria {
         Self.circuit(CircuitID(circuit))
     }
-    
-    /// Filters a request to only return entries related to
-    /// the given `constructor`.
-    public static func constructor(_ constructor: String) -> FilterCriteria {
-        FilterCriteria(path: "/constructors/\(constructor)")
-    }
-    
-    /// Filters a request to only return entries related to the given `driver`.
-    ///
-    /// - Parameter driver: The driver to filter by. Can be either a regular string or a known driver
-    /// from the ``DriverID`` type.
-    ///
-    /// - Returns: Filter criteria based on driver id.
-    public static func driver(_ driver: DriverID) -> FilterCriteria {
-        FilterCriteria(path: "/drivers/\(driver.id)")
-    }
-    
+
     /// Filters a request to only return entries related to the given `driver`.
     ///
     /// - Parameter driver: The id of a driver to filter by.
@@ -49,39 +60,36 @@ public struct FilterCriteria {
     public static func driver(_ driver: String) -> FilterCriteria {
         Self.driver(DriverID(driver))
     }
-    
-    /// Filters a request to only return entries related to the given starting grid `position`.
-    public static func grid(_ position: Int) -> FilterCriteria {
-        FilterCriteria(path: "/grid/\(position)")
-    }
-    
-    /// Filters a request to only return entries related to the given `result` at the end of the race.
-    public static func finishingResult(_ result: FinishingResult) -> FilterCriteria {
-        FilterCriteria(path: "/results/\(result.rawValue)")
-    }
-    
+
     /// Filters a request to only return entries related to the given `position` at the end of the race.
     public static func finishingPosition(_ position: Int) -> FilterCriteria {
         finishingResult(.finished(position: position))
     }
-    
-    /// Filters a request to only return entries related to the time at the given `rank`.
-    public static func fastest(_ rank: Int) -> FilterCriteria {
-        FilterCriteria(path: "/fastest/\(rank)")
-    }
-    
-    /// Filters a request to only return entries related to the given finishing `status`.
-    public static func status(_ status: String) -> FilterCriteria {
-        FilterCriteria(path: "/status/\(status)")
-    }
-    
-    /// Filters a request to only return entries related to the driver at the given standing `position`.
-    public static func driverStanding(_ position: Int) -> FilterCriteria {
-        FilterCriteria(path: "/driverStandings/\(position)")
-    }
-    
-    /// Filters a request to only return entries related to the constructor at the given standing `position`.
-    public static func constructorStanding(_ position: Int) -> FilterCriteria {
-        FilterCriteria(path: "/constructorStandings/\(position)")
+}
+
+// MARK: - Private
+
+extension FilterCriteria {
+    var path: String {
+        switch self {
+        case .circuit(let circuit):
+            return "/circuits/\(circuit.id)"
+        case .constructor(let constructor):
+            return "/constructors/\(constructor)"
+        case .driver(let driver):
+            return "/drivers/\(driver.id)"
+        case .grid(position: let position):
+            return "/grid/\(position)"
+        case .finishingResult(let result):
+            return "/results/\(result.rawValue)"
+        case .fastest(let rank):
+            return "/fastest/\(rank)"
+        case .status(let status):
+            return "/status/\(status)"
+        case .driverStanding(position: let position):
+            return "/driverStandings/\(position)"
+        case .constructorStanding(position: let position):
+            return "/constructorStandings/\(position)"
+        }
     }
 }

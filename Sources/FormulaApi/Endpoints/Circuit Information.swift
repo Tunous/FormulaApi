@@ -81,7 +81,7 @@ extension URL {
 
         var circuitFilter: FilterCriteria?
         for criterion in criteria {
-            if criterion.path.starts(with: "/circuits") {
+            if case .circuit = criterion {
                 circuitFilter = criterion
                 continue
             }

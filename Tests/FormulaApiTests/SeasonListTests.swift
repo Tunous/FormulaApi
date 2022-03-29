@@ -31,7 +31,7 @@ final class SeasonListTests: BaseTestCase {
     func testSeasonListByDriverAndStanding() async throws {
         try mockSuccess(url: "https://ergast.com/api/f1/drivers/alonso/driverStandings/1/seasons.json", fileName: "seasons-alonso-driverstanding")
 
-        let seasons = try await F1.seasons(by: .driver("alonso"), .driverStanding(1))
+        let seasons = try await F1.seasons(by: .driver("alonso"), .driverStanding(position: 1))
 
         XCTAssertEqual(seasons.count, 2)
 
@@ -43,7 +43,7 @@ final class SeasonListTests: BaseTestCase {
     func testSeasonListByConstructorAndStanding() async throws {
         try mockSuccess(url: "https://ergast.com/api/f1/constructors/renault/constructorStandings/1/seasons.json", fileName: "seasons-renault-constructorstanding")
 
-        let seasons = try await F1.seasons(by: .constructor("renault"), .constructorStanding(1))
+        let seasons = try await F1.seasons(by: .constructor("renault"), .constructorStanding(position: 1))
 
         XCTAssertEqual(seasons.count, 2)
 
