@@ -17,6 +17,7 @@ All of the available API endpoints provided by this library are accessible throu
 
 - ``FilterCriteria``
 - ``RaceSeason``
+- ``RaceRound``
 
 ### Pagination
 
@@ -25,14 +26,14 @@ All of the available API endpoints provided by this library are accessible throu
 
 ### Season list
 
-- ``F1/seasons(season:by:page:)-8j80j``
-- ``F1/seasons(season:by:page:)-3uyre``
+- ``F1/seasons(season:by:page:)-79nfq``
+- ``F1/seasons(season:by:page:)-o9s8``
 - ``Season``
 
 ### Race schedule
 
-- ``F1/races(season:by:page:)-5sokl``
-- ``F1/races(season:by:page:)-20v6i``
+- ``F1/races(season:by:page:)-3v7v8``
+- ``F1/races(season:by:page:)-9lbne``
 - ``Race``
 
 ### Identifiers

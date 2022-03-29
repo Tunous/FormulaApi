@@ -1,9 +1,10 @@
 import SwiftUI
 
+/// Driver's finishing result at the end of the race.
 public enum FinishingResult: Hashable {
     
     /// Driver has finished the race at the specified `position`.
-    case finished(_ position: Int)
+    case finished(position: Int)
     
     /// Driver has retired from the race.
     case retired

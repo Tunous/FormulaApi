@@ -41,7 +41,7 @@ final class RaceScheduleTests: BaseTestCase {
     func testRaceRoundSchedule() async throws {
         try mockSuccess(url: "https://ergast.com/api/f1/2008/5.json", fileName: "races-2008-5")
 
-        let races = try await F1.races(season: .year(2008, round: 5))
+        let races = try await F1.races(season: .year(2008, round: .number(5)))
 
         XCTAssertTrue(!races.isEmpty)
     }

@@ -18,7 +18,7 @@ import Foundation
 ///
 /// ## See Also
 ///
-/// - ``FilterCriteria/circuit(_:)``
+/// - ``FilterCriteria/circuit(_:)-8c3dj``
 /// - ``Circuit``
 public struct CircuitID: ExpressibleByStringLiteral, Hashable {
     let id: String
@@ -40,7 +40,7 @@ public struct CircuitID: ExpressibleByStringLiteral, Hashable {
 
 extension CircuitID {
     /// Monza
-    public static let monza = DriverID("monza")
+    public static let monza = CircuitID("monza")
 }
 
 // MARK: Decoding
