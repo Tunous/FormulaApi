@@ -1,0 +1,36 @@
+name: Generate documentation
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Generate documentation
+      run: |
+        swift package \
+          --allow-writing-to-directory ./docs \
+          generate-documentation \
+          --target FormulaApi \
+          --output-path ./docs \
+          --transform-for-static-hosting \
+          --hosting-base-path 'FormulaApi' \
+          --disable-indexing
+          
+    - name: Check if documentation changed
+      id: changes
+      uses: UnicornGlobal/has-changes-action@v1.0.11
+
+    - name: Commit updated documentation
+      if: steps.changes.outputs.changed == 1
+      run: |
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
+        git add ./docs
+        git commit -m "Generate documentation"
+        git push origin master
