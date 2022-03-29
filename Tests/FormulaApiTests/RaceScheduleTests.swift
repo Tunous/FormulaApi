@@ -10,6 +10,7 @@ final class RaceScheduleTests: BaseTestCase {
         let races = try await F1.races(season: .year(2012))
 
         XCTAssertEqual(races.count, 20)
+        XCTAssertEqual(races.page.total, 20)
 
         let race = try XCTUnwrap(races.first)
         XCTAssertEqual(race.season, "2012")

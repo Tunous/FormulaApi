@@ -18,3 +18,19 @@ extension F1 {
         return try decoder.decode(Response.self, from: data)
     }
 }
+
+extension URL {
+    static func endpoint(named endpointName: String, season: RaceSeason, criteria: [FilterCriteria], page: Page?) -> URL {
+        var url = URL.base
+        if !season.path.isEmpty {
+            url.appendPathComponent(season.path)
+        }
+        for criterion in criteria {
+            url.appendPathComponent(criterion.path)
+        }
+        url.appendPathComponent(endpointName)
+        url.appendPathExtension("json")
+
+        return url.with(page: page)
+    }
+}

@@ -36,7 +36,10 @@ All of the available API endpoints provided by this library are accessible throu
 - ``F1/races(season:by:page:)-9lbne``
 - ``Race``
 
-### Identifiers
+### Circuits
 
+- ``F1/circuits(season:by:page:)-67o52``
+- ``F1/circuits(season:by:page:)-8dx45``
+- ``Circuit``
+- ``Location``
 - ``CircuitID``
-- ``DriverID``

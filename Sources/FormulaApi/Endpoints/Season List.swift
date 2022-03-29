@@ -80,17 +80,7 @@ extension F1 {
 
 extension URL {
     fileprivate static func seasons(season: RaceSeason, by criteria: [FilterCriteria], page: Page?) -> URL {
-        var url = URL.base
-        if !season.path.isEmpty {
-            url.appendPathComponent(season.path)
-        }
-        for criterion in criteria {
-            url.appendPathComponent(criterion.path)
-        }
-        url.appendPathComponent("/seasons")
-        url.appendPathExtension("json")
-        
-        return url.with(page: page)
+        return endpoint(named: "seasons", season: season, criteria: criteria, page: page)
     }
 }
 
