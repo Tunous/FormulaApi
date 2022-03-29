@@ -26,20 +26,20 @@ All of the available API endpoints provided by this library are accessible throu
 
 ### Season list
 
-- ``F1/seasons(season:by:page:)-79nfq``
-- ``F1/seasons(season:by:page:)-o9s8``
+- ``F1/seasons(season:by:page:)``
+- ``F1/seasons(season:criteria:page:)``
 - ``Season``
 
 ### Race schedule
 
-- ``F1/races(season:by:page:)-3v7v8``
-- ``F1/races(season:by:page:)-9lbne``
+- ``F1/races(season:by:page:)``
+- ``F1/races(season:criteria:page:)``
 - ``Race``
 
 ### Circuits
 
-- ``F1/circuits(season:by:page:)-67o52``
-- ``F1/circuits(season:by:page:)-8dx45``
+- ``F1/circuits(season:by:page:)``
+- ``F1/circuits(season:criteria:page:)``
 - ``Circuit``
 - ``Location``
 - ``CircuitID``

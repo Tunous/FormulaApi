@@ -10,7 +10,7 @@ extension F1 {
     /// let circuits = try await F1.circuits(season: .year(2022, round: .number(2)))
     /// ```
     ///
-    /// To obtain information about a particular circuit use the ``FilterCriteria/circuit(_:)-1j1lk`` filter criteria.
+    /// To obtain information about a particular circuit use the ``FilterCriteria/circuit(_:)`` filter criteria.
     ///
     /// ```swift
     /// let circuits = try await F1.circuits(by: [.circuit(.monza)])
@@ -26,13 +26,13 @@ extension F1 {
     /// - Throws: ``F1/Error`` if network request fails.
     public static func circuits(
         season: RaceSeason = .all,
-        by criteria: [FilterCriteria],
+        criteria: [FilterCriteria],
         page: Page? = nil
     ) async throws -> Paginable<Circuit> {
         let url = URL.circuits(season: season, by: criteria, page: page)
         let response = try await decodedData(CircuitsResponse.self, from: url)
         let nextPageRequest = {
-            try await F1.circuits(season: season, by: criteria, page: page)
+            try await F1.circuits(season: season, criteria: criteria, page: page)
         }
         return Paginable(
             elements: response.circuits,
@@ -49,7 +49,7 @@ extension F1 {
     /// let circuits = try await F1.circuits(season: .year(2022, round: .number(2)))
     /// ```
     ///
-    /// To obtain information about a particular circuit use the ``FilterCriteria/circuit(_:)-1j1lk`` filter criteria.
+    /// To obtain information about a particular circuit use the ``FilterCriteria/circuit(_:)`` filter criteria.
     ///
     /// ```swift
     /// let circuits = try await F1.circuits(by: .circuit(.monza))
@@ -68,7 +68,7 @@ extension F1 {
         by criteria: FilterCriteria...,
         page: Page? = nil
     ) async throws -> Paginable<Circuit> {
-        return try await circuits(season: season, by: criteria, page: page)
+        return try await circuits(season: season, criteria: criteria, page: page)
     }
 }
 

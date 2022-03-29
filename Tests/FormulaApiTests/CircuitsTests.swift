@@ -60,7 +60,7 @@ class CircuitsTests: BaseTestCase {
     func testCircuitById() async throws {
         try mockSuccess(url: "https://ergast.com/api/f1/circuits/monza.json", fileName: "circuits-monza")
 
-        let circuits = try await F1.circuits(by: [.circuit(.monza)])
+        let circuits = try await F1.circuits(by: .circuit(.monza))
 
         XCTAssertEqual(circuits.count, 1)
         XCTAssertEqual(circuits.page.total, 1)
@@ -78,7 +78,7 @@ class CircuitsTests: BaseTestCase {
     func testCircuitByDriverAndConstructor() async throws {
         try mockSuccess(url: "https://ergast.com/api/f1/drivers/alonso/constructors/mclaren/circuits.json", fileName: "circuits-alonso-mclaren")
 
-        let circuits = try await F1.circuits(by: [.driver(.alonso), .constructor("mclaren")])
+        let circuits = try await F1.circuits(by: .driver(.alonso), .constructor("mclaren"))
 
         XCTAssertEqual(circuits.count, 27)
         XCTAssertEqual(circuits.page.total, 27)

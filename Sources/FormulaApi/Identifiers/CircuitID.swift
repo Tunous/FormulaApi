@@ -18,7 +18,7 @@ import Foundation
 ///
 /// ## See Also
 ///
-/// - ``FilterCriteria/circuit(_:)-8c3dj``
+/// - ``FilterCriteria/circuit(_:)``
 /// - ``Circuit``
 public struct CircuitID: ExpressibleByStringLiteral, Hashable {
     let id: String

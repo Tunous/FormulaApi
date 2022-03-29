@@ -21,13 +21,13 @@ extension F1 {
     /// - Throws: ``F1/Error`` if network request fails.
     public static func races(
         season: RaceSeason = .all,
-        by criteria: [FilterCriteria],
+        criteria: [FilterCriteria],
         page: Page? = nil
     ) async throws -> Paginable<Race> {
         let url = URL.races(season: season, by: criteria, page: page)
         let racesResponse = try await decodedData(RacesResponse.self, from: url)
         let nextPageRequest = {
-            try await F1.races(season: season, by: criteria, page: racesResponse.page.next())
+            try await F1.races(season: season, criteria: criteria, page: racesResponse.page.next())
         }
         return Paginable(
             elements: racesResponse.races,
@@ -58,7 +58,7 @@ extension F1 {
         by criteria: FilterCriteria...,
         page: Page? = nil
     ) async throws -> Paginable<Race> {
-        return try await races(season: season, by: criteria, page: page)
+        return try await races(season: season, criteria: criteria, page: page)
     }
 }
 

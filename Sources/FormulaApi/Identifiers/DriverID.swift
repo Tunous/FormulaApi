@@ -18,7 +18,7 @@ import Foundation
 ///
 /// ## See Also
 ///
-/// - ``FilterCriteria/driver(_:)-3n6ov``
+/// - ``FilterCriteria/driver(_:)``
 public struct DriverID: ExpressibleByStringLiteral, Hashable {
     let id: String
 
