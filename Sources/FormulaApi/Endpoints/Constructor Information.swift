@@ -2,28 +2,28 @@ import Foundation
 
 extension F1 {
 
-    /// Returns information about Formula 1 drivers.
+    /// Returns information about Formula 1 constructors.
     ///
     /// - Parameters:
     ///   - season: Limits results to specific season. By default all seasons will be returned.
     ///   - criteria: Criteria used to refine the returned season list.
     ///   - page: Page to fetch. Defaults to fetching first 30 elements.
     ///
-    /// - Returns: List of drivers matching the given filter `criteria`.
+    /// - Returns: List of constructors matching the given filter `criteria`.
     ///
     /// - Throws: ``F1/Error`` if network request fails.
-    public static func drivers(
+    public static func constructors(
         season: RaceSeason = .all,
         by criteria: [FilterCriteria] = [],
         page: Page? = nil
-    ) async throws -> Paginable<Driver> {
-        let url = URL.drivers(season: season, by: criteria, page: page)
-        let response = try await decodedData(DriversResponse.self, from: url)
+    ) async throws -> Paginable<Constructor> {
+        let url = URL.constructors(season: season, by: criteria, page: page)
+        let response = try await decodedData(ConstructorsResponse.self, from: url)
         let nextPageRequest = {
-            try await F1.drivers(season: season, by: criteria, page: page)
+            try await F1.constructors(season: season, by: criteria, page: page)
         }
         return Paginable(
-            elements: response.drivers,
+            elements: response.constructors,
             page: response.page,
             nextPageRequest: nextPageRequest
         )
@@ -31,13 +31,13 @@ extension F1 {
 }
 
 extension URL {
-    fileprivate static func drivers(season: RaceSeason, by criteria: [FilterCriteria], page: Page?) -> URL {
+    fileprivate static func constructors(season: RaceSeason, by criteria: [FilterCriteria], page: Page?) -> URL {
         var url = URL.base
         if !season.path.isEmpty {
             url.appendPathComponent(season.path)
         }
-        url.appendCriteriaPathComponents(criteria, endpoint: "drivers") { criterion in
-            if case .driver = criterion {
+        url.appendCriteriaPathComponents(criteria, endpoint: "constructors") { criterion in
+            if case .constructor = criterion {
                 return true
             }
             return false
@@ -49,16 +49,16 @@ extension URL {
 
 // MARK: - Decoding
 
-struct DriversResponse: Decodable {
+struct ConstructorsResponse: Decodable {
     private enum DataKeys: String, CodingKey {
-        case driverTable = "DriverTable"
+        case constructorTable = "ConstructorTable"
     }
 
-    private enum DriverTableKeys: String, CodingKey {
-        case drivers = "Drivers"
+    private enum ConstructorTableKeys: String, CodingKey {
+        case constructors = "Constructors"
     }
 
-    let drivers: [Driver]
+    let constructors: [Constructor]
     let page: Page
 
     init(from decoder: Decoder) throws {
@@ -66,8 +66,8 @@ struct DriversResponse: Decodable {
         self.page = try rootContainer.decode(Page.self, forKey: .data)
 
         let dataContainer = try rootContainer.nestedContainer(keyedBy: DataKeys.self, forKey: .data)
-        let tableContainer = try dataContainer.nestedContainer(keyedBy: DriverTableKeys.self, forKey: .driverTable)
+        let tableContainer = try dataContainer.nestedContainer(keyedBy: ConstructorTableKeys.self, forKey: .constructorTable)
 
-        self.drivers = try tableContainer.decode([Driver].self, forKey: .drivers)
+        self.constructors = try tableContainer.decode([Constructor].self, forKey: .constructors)
     }
 }

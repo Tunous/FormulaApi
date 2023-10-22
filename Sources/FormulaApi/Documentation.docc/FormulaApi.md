@@ -18,6 +18,7 @@ All of the available API endpoints provided by this library are accessible throu
 - ``FilterCriteria``
 - ``RaceSeason``
 - ``RaceRound``
+- ``FinishingResult``
 
 ### Pagination
 
@@ -37,12 +38,18 @@ All of the available API endpoints provided by this library are accessible throu
 ### Circuits
 
 - ``F1/circuits(season:by:page:)``
+- ``CircuitID``
 - ``Circuit``
 - ``Location``
-- ``CircuitID``
 
 ### Drivers
 
 - ``F1/drivers(season:by:page:)``
-- ``Driver``
 - ``DriverID``
+- ``Driver``
+
+### Constructors
+
+- ``F1/constructors(season:by:page:)``
+- ``ConstructorID``
+- ``Constructor``

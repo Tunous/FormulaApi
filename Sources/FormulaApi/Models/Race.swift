@@ -1,7 +1,7 @@
 import Foundation
 
 /// Information about a race weekend in a season.
-public struct Race {
+public struct Race: Hashable {
     public let season: String
     public let round: String
     public let url: URL

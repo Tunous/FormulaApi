@@ -1,7 +1,7 @@
 import Foundation
 
 /// Information about a driver.
-public struct Driver {
+public struct Driver: Identifiable, Hashable {
 
     /// Identifier of the driver.
     public let id: DriverID

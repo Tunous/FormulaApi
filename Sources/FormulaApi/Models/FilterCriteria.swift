@@ -5,7 +5,7 @@ public enum FilterCriteria: Hashable {
     
     /// Filters a request to only return entries related to the given `circuit`.
     ///
-    /// For example when used in ``F1/seasons(season:criteria:page:)`` method, the criteria will
+    /// For example when used in ``F1/seasons(season:by:page:)`` method, the criteria will
     /// limit the returned seasons to only these, which included the given circuit in their schedule.
     ///
     /// - Parameter circuit: The circuit to filter by. Can be either a regular string or a know circuit

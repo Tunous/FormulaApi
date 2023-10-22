@@ -18,3 +18,26 @@ extension F1 {
         return try decoder.decode(Response.self, from: data)
     }
 }
+
+extension URL {
+    mutating func appendCriteriaPathComponents(
+        _ criteria: [FilterCriteria],
+        endpoint: String,
+        isEndpointCriterion: (FilterCriteria) -> Bool
+    ) {
+        var endpointFilter: FilterCriteria?
+        for criterion in criteria {
+            if isEndpointCriterion(criterion) {
+                endpointFilter = criterion
+                continue
+            }
+            appendPathComponent(criterion.path)
+        }
+
+        if let endpointFilter {
+            appendPathComponent(endpointFilter.path)
+        } else {
+            appendPathComponent(endpoint)
+        }
+    }
+}

@@ -1,7 +1,7 @@
 import Foundation
 
 /// Information about a race season.
-public struct Season: Decodable {
+public struct Season: Hashable, Decodable {
 
     /// Name of the season
     public let season: String

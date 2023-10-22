@@ -1,7 +1,7 @@
 import Foundation
 
 /// Information about a race circuit.
-public struct Circuit {
+public struct Circuit: Identifiable, Hashable {
 
     /// Identifier of the circuit.
     public let id: CircuitID
