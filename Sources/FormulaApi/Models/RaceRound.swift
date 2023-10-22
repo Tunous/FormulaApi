@@ -37,3 +37,9 @@ public enum RaceRound: Hashable {
         }
     }
 }
+
+extension RaceRound: ExpressibleByIntegerLiteral {
+    public init(integerLiteral value: IntegerLiteralType) {
+        self = .number(value)
+    }
+}
