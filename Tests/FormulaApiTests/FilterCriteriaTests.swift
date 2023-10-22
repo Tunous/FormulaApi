@@ -9,6 +9,7 @@ final class FilterCriteriaTests: BaseTestCase {
     }
 
     func testConstructorFilter() throws {
+        XCTAssertEqual(FilterCriteria.constructor(.ferrari).path, "/constructors/ferrari")
         XCTAssertEqual(FilterCriteria.constructor("mercedes").path, "/constructors/mercedes")
     }
 

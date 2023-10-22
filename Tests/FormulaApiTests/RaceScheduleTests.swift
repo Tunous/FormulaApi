@@ -50,7 +50,7 @@ final class RaceScheduleTests: BaseTestCase {
     func testRacesWithDriverAndCircuit() async throws {
         try mockSuccess(url: "https://ergast.com/api/f1/drivers/alonso/circuits/monza/races.json", fileName: "races-alonso-monza")
 
-        let races = try await F1.races(by: .driver("alonso"), .circuit("monza"))
+        let races = try await F1.races(by: [.driver(.alonso), .circuit(.monza)])
 
         XCTAssertTrue(!races.isEmpty)
     }

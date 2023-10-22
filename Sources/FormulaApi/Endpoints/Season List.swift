@@ -28,13 +28,13 @@ extension F1 {
     /// - Throws: ``F1/Error`` if network request fails.
     public static func seasons(
         season: RaceSeason = .all,
-        criteria: [FilterCriteria],
+        by criteria: [FilterCriteria] = [],
         page: Page? = nil
     ) async throws -> Paginable<Season> {
         let url = URL.seasons(season: season, by: criteria, page: page)
         let seasonsResponse = try await decodedData(SeasonsResponse.self, from: url)
         let nextPageRequest = {
-            try await F1.seasons(season: season, criteria: criteria, page: seasonsResponse.page.next())
+            try await F1.seasons(season: season, by: criteria, page: seasonsResponse.page.next())
         }
         return Paginable(
             elements: seasonsResponse.seasons,
@@ -42,45 +42,23 @@ extension F1 {
             nextPageRequest: nextPageRequest
         )
     }
-
-    /// List the seasons currently supported by the API.
-    ///
-    /// Season lists can be refined by adding one or more of ``FilterCriteria``. For example, to list all seasons where
-    /// a specific driver has driven for a particular constructor:
-    ///
-    /// ```swift
-    /// let seasons = try await F1.seasons(by: .driver("alonso"), .constructor("renault"))
-    /// ```
-    ///
-    /// Alternatively, to list the seasons where a specific driver or constructor has achieved a particular final position in the championship:
-    ///
-    /// ```swift
-    /// let seasons = try await F1.seasons(by: .driver("alonso"), .driverStanding(1))
-    /// let seasons = try await F1.seasons(by: .constructor("renault"), .constructorStanding(1))
-    /// ```
-    ///
-    /// - Parameters:
-    ///   - season: Limits results to specific season. By default all seasons will be returned.
-    ///   - criteria: Criteria used to refine the returned season list.
-    ///   - page: Page to fetch. Defaults to fetching first 30 elements.   
-    ///
-    /// - Returns: List of seasons matching the given filter `criteria`.
-    ///
-    /// - Throws: ``F1/Error`` if network request fails.
-    public static func seasons(
-        season: RaceSeason = .all,
-        by criteria: FilterCriteria...,
-        page: Page? = nil
-    ) async throws -> Paginable<Season> {
-        return try await seasons(season: season, criteria: criteria, page: page)
-    }
 }
 
 // MARK: - Private
 
 extension URL {
     fileprivate static func seasons(season: RaceSeason, by criteria: [FilterCriteria], page: Page?) -> URL {
-        return endpoint(named: "seasons", season: season, criteria: criteria, page: page)
+        var url = URL.base
+        if !season.path.isEmpty {
+            url.appendPathComponent(season.path)
+        }
+        for criterion in criteria {
+            url.appendPathComponent(criterion.path)
+        }
+        url.appendPathComponent("seasons")
+        url.appendPathExtension("json")
+
+        return url.with(page: page)
     }
 }
 
